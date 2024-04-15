@@ -47,6 +47,9 @@ jQuery.noConflict();
   // 文字装飾
   const ParameterTextFont = 'paramTextFont';
 
+  const ParameterCountRow = 'paramCountRow';     // 行数
+  const ParameterListRow = 'paramListRow';      // 行のデータ(JSON->テキスト)
+
   // 環境設定
   const Parameter = {
     // 表示文字
@@ -123,11 +126,16 @@ jQuery.noConflict();
       Label: '#plugin_label',
 
       TableBody: '#table_body',
+      //StatusTitle: '.status_title',
+      //ButtonTitle: '.button_title',
 
       Cancel: '#plugin_cancel',
       Ok: '#plugin_ok',
     },
     Elements: {
+      StatusTitle: '#status_title',
+      ButtonTitle: '#button_title',
+
       TextColor: '#text_color',
       BackColor: '#back_color',
       TextSize: '#text_size',
@@ -285,6 +293,7 @@ jQuery.noConflict();
    戻り値：なし
   */
   const settingHtml = async () => {
+    // ステータス情報の取得
     const params = {
       app: kintone.app.getId()   // アプリ番号
     };
@@ -312,48 +321,62 @@ jQuery.noConflict();
       status.buttons.push(action);
     }
     //console.log('listStatus:%o', listStatus);
+    // 現在データの呼び出し
+    var nowConfig = kintone.plugin.app.getConfig(PLUGIN_ID_);
+    console.log('nowConfig:%o', nowConfig);
+
+    var listRow = null;
+    if (nowConfig[ParameterListRow]) {
+      listRow = JSON.parse(nowConfig[ParameterListRow]);
+    }
+    if( listRow.length ==0){
+      return;
+    }
+    console.log("listRow:%o", listRow);
 
     // index順にソート(並び替え)
     var listSortStatus = listStatus.sort((a, b) => { return (a.index < b.index) ? -1 : 1 });
     console.log('listSortStatus:%o', listSortStatus);
 
+    // 現在データの表示
+    var requireTr =jQuery(Parameter.Html.TableBody + ' > tr').eq(0);
+    requireTr.find(Parameter.Elements.TextColor).val(listRow[0].TextColor);
+    requireTr.find(Parameter.Elements.BackColor).val(listRow[0].BackColor);
+    requireTr.find(Parameter.Elements.TextSize).val(listRow[0].TextSize);
+    requireTr.find(Parameter.Elements.TextFont).val(listRow[0].TextFont);
+
     var table = jQuery(Parameter.Html.TableBody);
     for (var status of listSortStatus) {
-      var flg =false;
+      console.log('status:%o', status);
+      var flg = false;
       for (var button of status.buttons) {
         var cloneTr = jQuery(Parameter.Html.TableBody + ' > tr').eq(0).clone(true);
-        cloneTr.find('.status_title').eq(0).html(status.name);
-        if(flg ==false){
+        cloneTr.find(Parameter.Elements.StatusTitle).text(status.name);
+        if (flg == false) {
           cloneTr.find('td').eq(0).prop('rowspan', status.buttons.length);
-        }else{
+        } else {
           cloneTr.find('td').eq(0).hide();;
         }
-        //var listStatus =cloneTr.find('.status_title');
-        //console.log('listStatus:%o', listStatus);
-        //var statusTr =listStatus.eq(0)
-        //statusTr.innerHTML =status.name;
-        //statusTr.innerTEXT =status.name;
-        //console.log('statusTr:%o', statusTr);
 
-        cloneTr.find('.button_title').eq(0).html(button.name);
-        //var listButton =cloneTr.find('.button_title');
-        //console.log('listButton:%o', listButton);
-        //var buttonTr =listButton.eq(0);
-        //buttonTr.innerHTML =button.name;
-        //buttonTr.innerTEXT =button.name;
-        //console.log('buttonTr:%o', buttonTr);
+        cloneTr.find(Parameter.Elements.ButtonTitle).text(button.name);
 
-        console.log('cloneTr:%o', cloneTr);
         table.append(cloneTr);
-        flg =true;
+        flg = true;
+
+        if (listRow != null) {
+          var find = listRow.find(f => f.Status == status.name && f.Button == button.name);
+          if (typeof find == 'undefined') {
+            continue;
+          }
+          console.log('find:%o', find);
+
+          cloneTr.find(Parameter.Elements.TextColor).val(find.TextColor);
+          cloneTr.find(Parameter.Elements.BackColor).val(find.BackColor);
+          cloneTr.find(Parameter.Elements.TextSize).val(find.TextSize);
+          cloneTr.find(Parameter.Elements.TextFont).val(find.TextFont);
+        }
       }
     }
-
-    // 現在データの呼び出し
-    var nowConfig = kintone.plugin.app.getConfig(PLUGIN_ID_);
-    console.log('nowConfig:%o', nowConfig);
-
-    // 現在データの表示
   };
 
   /*
@@ -364,6 +387,37 @@ jQuery.noConflict();
   const saveSetting = () => {
     // 各パラメータの保存
     var config = {};
+    //console.log('config:%o', config);
+    //
+    var listRow = [];
+    var listTr = jQuery(Parameter.Html.TableBody + ' > tr');
+    var count = 0;
+    for (var row of listTr) {
+      console.log("row:%o", row);
+
+      var status = jQuery(row).find(Parameter.Elements.StatusTitle);
+      console.log("status:%o", status);
+      var button = jQuery(row).find(Parameter.Elements.ButtonTitle);
+      console.log("button:%o", button);
+
+      var textColor = jQuery(row).find(Parameter.Elements.TextColor);
+      var backColor = jQuery(row).find(Parameter.Elements.BackColor);
+      var textSize = jQuery(row).find(Parameter.Elements.TextSize);
+      var textFont = jQuery(row).find(Parameter.Elements.TextFont);
+      //
+      listRow.push({
+        Status: status.text(), Button: button.text(),
+        TextColor: textColor.val(), BackColor: backColor.val(),
+        TextSize: textSize.val(), TextFont: textFont.val()
+      });
+      count++;
+    }
+    console.log("listRow:%o", listRow);
+
+
+    config[ParameterCountRow] = '' + count;
+    // 配列は一旦文字列化して保存
+    config[ParameterListRow] = JSON.stringify(listRow);
 
     console.log('config:%o', config);
 
@@ -405,7 +459,7 @@ jQuery.noConflict();
   await settingHtml();
 
   // 保存
-  jQuery(Parameter.Html.Ok).click(() => { saveSetting(); });
+  jQuery(Parameter.Html.Ok).click(() => { saveSetting();});
   // キャンセル
   jQuery(Parameter.Html.Cancel).click(() => { history.back(); });
 
@@ -421,5 +475,14 @@ jQuery.noConflict();
       $colorPicker.colorPicker.toggle(false);
     }
   });
+
+  /*
+  スリープ関数
+   引数　：ms_ ms単位のスリープ時間
+   戻り値：なし
+  */
+   const Sleep=(ms_)=>{
+    return new Promise(resolve_ => setTimeout(resolve_, ms_));
+  };
 
 })(jQuery, kintone.$PLUGIN_ID);

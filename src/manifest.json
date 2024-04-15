@@ -39,6 +39,8 @@
       "css/config.css"
     ],
     "required_params": [
+      "paramCountRow",
+      "paramListRow"
     ]
   }
 }
