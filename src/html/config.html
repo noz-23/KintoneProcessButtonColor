@@ -18,6 +18,9 @@
             <span class="title">{{html:lang.button_label}}</span>
           </th>
           <th class="kintoneplugin-table-th">
+            <span class="title">{{html:lang.enabled_label}}</span>
+          </th>
+          <th class="kintoneplugin-table-th">
             <span class="title">{{html:lang.text_color_titile}}</span>
           </th>
           <th class="kintoneplugin-table-th">
@@ -34,13 +37,19 @@
       <tbody id="table_body">
         <!--  row -->
         <tr class="cf-plugin-text-line">
-          <td>
+          <td class="kintoneplugin-table-td">
             <span id="status_title">{{html:lang.status_require}}</span>
           </td>
-          <td>
+          <td class="kintoneplugin-table-td">
             <span id="button_title">{{html:lang.button_require}}</span>
           </td>
-          <td>
+          <td class="kintoneplugin-table-td">
+            <div class="kintoneplugin-input-outer">
+              <input id="enabled_checkbox" class="kintoneplugin-input-text" type="checkbox" name="edit" checked>
+              <label for="edit">{{html:lang.enabled_value}}</label>
+            </div>
+          </td>
+          <td class="kintoneplugin-table-td">
             <div class="kintoneplugin-table-td-control">
               <div class="kintoneplugin-table-td-control-value">
                 <div>
@@ -57,7 +66,7 @@
               </div>
             </div>
           </td>
-          <td>
+          <td class="kintoneplugin-table-td">
             <div class="kintoneplugin-table-td-control">
               <div class="kintoneplugin-table-td-control-value">
                 <div>
@@ -74,7 +83,7 @@
               </div>
             </div>
           </td>
-          <td>
+          <td class="kintoneplugin-table-td">
             <div class="kintoneplugin-select">
               <select id="text_size">
                 <option value="">{{html:lang.text_size_nomal}}</option>
@@ -85,7 +94,7 @@
               </select>
             </div>
           </td>
-          <td>
+          <td class="kintoneplugin-table-td">
             <div class="kintoneplugin-select">
               <select id="text_font">
                 <option value="">{{html:lang.text_font_normal}}</option>

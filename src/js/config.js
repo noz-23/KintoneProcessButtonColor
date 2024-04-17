@@ -64,11 +64,15 @@ jQuery.noConflict();
         text_size_titile: 'Text Size',
         text_font_titile: 'Font Option',
 
+        enabled_label: 'Enabled',
+
         status_label: 'Status',
         button_label: 'Button',
 
         status_require: 'Input',
         button_require: 'Requiire',
+
+        enabled_value: 'Enabled',
 
         text_size_nomal: 'Normal',
         text_size_x_small: 'Very Small',
@@ -97,9 +101,14 @@ jQuery.noConflict();
 
         status_label: '状　態',
         button_label: 'ボタン',
+        
+        enabled_label: '有効化',
 
         status_require: '入力必須',
         button_require: '項目フィールド',
+
+        enabled_value: '利用',
+
 
         text_size_nomal: '変更なし',
         text_size_x_small: '小さい',
@@ -136,6 +145,8 @@ jQuery.noConflict();
       StatusTitle: '#status_title',
       ButtonTitle: '#button_title',
 
+      EnabledCheck: '#enabled_checkbox',
+    
       TextColor: '#text_color',
       BackColor: '#back_color',
       TextSize: '#text_size',
@@ -340,6 +351,8 @@ jQuery.noConflict();
 
     // 現在データの表示
     var requireTr =jQuery(Parameter.Html.TableBody + ' > tr').eq(0);
+    requireTr.find(Parameter.Elements.EnabledCheck).eq(0).prop('checked', listRow[0].Checked);
+  
     requireTr.find(Parameter.Elements.TextColor).val(listRow[0].TextColor);
     requireTr.find(Parameter.Elements.BackColor).val(listRow[0].BackColor);
     requireTr.find(Parameter.Elements.TextSize).val(listRow[0].TextSize);
@@ -368,7 +381,9 @@ jQuery.noConflict();
           if (typeof find == 'undefined') {
             continue;
           }
-          console.log('find:%o', find);
+          //console.log('find:%o', find);
+
+          cloneTr.find(Parameter.Elements.EnabledCheck).eq(0).prop("checked", find.Checked);
 
           cloneTr.find(Parameter.Elements.TextColor).val(find.TextColor);
           cloneTr.find(Parameter.Elements.BackColor).val(find.BackColor);
@@ -400,6 +415,7 @@ jQuery.noConflict();
       var button = jQuery(row).find(Parameter.Elements.ButtonTitle);
       console.log("button:%o", button);
 
+      var checked =jQuery(row).find(Parameter.Elements.EnabledCheck);
       var textColor = jQuery(row).find(Parameter.Elements.TextColor);
       var backColor = jQuery(row).find(Parameter.Elements.BackColor);
       var textSize = jQuery(row).find(Parameter.Elements.TextSize);
@@ -407,6 +423,7 @@ jQuery.noConflict();
       //
       listRow.push({
         Status: status.text(), Button: button.text(),
+        Checked :checked.prop('checked'),
         TextColor: textColor.val(), BackColor: backColor.val(),
         TextSize: textSize.val(), TextFont: textFont.val()
       });
