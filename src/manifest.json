@@ -1,0 +1,46 @@
+{
+  "manifest_version": 1,
+  "version": "0.1.0",
+  "type": "APP",
+  "name": {
+    "en": "KintoneProcessButtonColor",
+    "ja": "プロセスボタン書式変更"
+  },
+  "description": {
+    "en": "Process Button Change Color",
+    "ja": "プロセスボタンの書式を変更"
+  },
+  "icon": "image/icon.png",
+  "homepage_url": {
+    "en": "https://github.com/noz-23/KintoneProcessButtonColor",
+    "ja": "https://github.com/noz-23/KintoneProcessButtonColor"
+  },
+  "desktop": {
+    "js": [
+      "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.91/jsrender.min.js",
+      "js/desktop.js"
+    ],
+    "css": [
+      "css/51-modern-default.css",
+      "css/desktop.css"
+    ]
+  },
+  "config": {
+    "html": "html/config.html",
+    "js": [
+      "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.91/jsrender.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js",
+      "js/config.js"
+    ],
+    "css": [
+      "css/51-modern-default.css",
+      "css/config.css"
+    ],
+    "required_params": [
+      "paramCountRow",
+      "paramListRow"
+    ]
+  }
+}
