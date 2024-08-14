@@ -26,7 +26,7 @@
  *
  * History
  *  2024/04/10 0.1.0 とりあえずバージョン
- *
+ *  2024/08/14 0.1.1 HTMLの表示関係の修正 
  */
 
 jQuery.noConflict();
@@ -36,16 +36,14 @@ jQuery.noConflict();
 
   // 設定パラメータ
   // 文字色
-  const ParameterTextColor = 'paramTextColor';
-
+  //const ParameterTextColor = 'paramTextColor';
   // 背景色
-  const ParameterBackColor = 'paramBackColor';
-
+  //const ParameterBackColor = 'paramBackColor';
   // 文字の大きさ
-  const ParameterTextSize = 'paramTextSize';
-
+  //const ParameterTextSize = 'paramTextSize';
   // 文字装飾
-  const ParameterTextFont = 'paramTextFont';
+  //const ParameterTextFont = 'paramTextFont';
+  // ↓まとめて保存
 
   const ParameterCountRow = 'paramCountRow';     // 行数
   const ParameterListRow = 'paramListRow';      // 行のデータ(JSON->テキスト)
@@ -59,20 +57,18 @@ jQuery.noConflict();
         plugin_description: 'Change Process Button and Set Text Color ,Size, Option',
         plugin_label: 'Please Setting Text Color ,Size, Option',
 
-        text_color_titile: 'Text Color',
-        back_color_titile: 'Back Color',
-        text_size_titile: 'Text Size',
-        text_font_titile: 'Font Option',
+        titile_text_color: 'Text Color',
+        titile_back_color_: 'Back Color',
+        titile_text_size: 'Text Size',
+        titile_text_font: 'Font Option',
 
-        enabled_label: 'Enabled',
+        label_enabled: 'Enabled',
+        label_status: 'Status',
+        label_button: 'Button',
 
-        status_label: 'Status',
-        button_label: 'Button',
-
-        status_require: 'Input',
-        button_require: 'Requiire',
-
-        enabled_value: 'Enabled',
+        require_status: 'Input',
+        require_button: 'Requiire',
+        value_enabled: 'Enabled',
 
         text_size_nomal: 'Normal',
         text_size_x_small: 'Very Small',
@@ -94,21 +90,19 @@ jQuery.noConflict();
         plugin_description: 'プロセス位置を表示し、文字色などを設定できます',
         plugin_label: '文字色等を設定して下さい',
 
-        text_color_titile: '文字色',
-        back_color_titile: '背景色',
-        text_size_titile: '文字サイズ',
-        text_font_titile: '文字オプション',
+        titile_text_color: '文字色',
+        titile_back_color: '背景色',
+        titile_text_size: '文字サイズ',
+        titile_text_font: '文字オプション',
 
-        status_label: '状　態',
-        button_label: 'ボタン',
-        
-        enabled_label: '有効化',
+        label_status: '状　態',
+        label_button: 'ボタン',     
+        label_enabled: '有効化',
 
-        status_require: '入力必須',
-        button_require: '項目フィールド',
+        require_status: '入力必須',
+        require_button: '項目フィールド',
 
-        enabled_value: '利用',
-
+        value_enabled: '利用',
 
         text_size_nomal: '変更なし',
         text_size_x_small: '小さい',
@@ -135,15 +129,13 @@ jQuery.noConflict();
       Label: '#plugin_label',
 
       TableBody: '#table_body',
-      //StatusTitle: '.status_title',
-      //ButtonTitle: '.button_title',
 
       Cancel: '#plugin_cancel',
       Ok: '#plugin_ok',
     },
     Elements: {
-      StatusTitle: '#status_title',
-      ButtonTitle: '#button_title',
+      TitleStatus: '#title_status',
+      TitleButton: '#title_button',
 
       EnabledCheck: '#enabled_checkbox',
     
@@ -209,23 +201,11 @@ jQuery.noConflict();
         $el.val(colorCode);
 
         // ここで値の受け渡しのテキスト変更
-        if ($el.hasClass('text_color_end')) {
-          $el.css('color', colorCode);
-        }
-        if ($el.hasClass('text_color_now')) {
-          $el.css('color', colorCode);
-        }
-        if ($el.hasClass('text_color_yet')) {
+        if ($el.hasClass('text_color')) {
           $el.css('color', colorCode);
         }
         //
-        if ($el.hasClass('back_color_end')) {
-          $el.css('background-color', colorCode);
-        }
-        if ($el.hasClass('back_color_now')) {
-          $el.css('background-color', colorCode);
-        }
-        if ($el.hasClass('back_color_yet')) {
+        if ($el.hasClass('back_color')) {
           $el.css('background-color', colorCode);
         }
         // 
@@ -354,7 +334,9 @@ jQuery.noConflict();
     requireTr.find(Parameter.Elements.EnabledCheck).eq(0).prop('checked', listRow[0].Checked);
   
     requireTr.find(Parameter.Elements.TextColor).val(listRow[0].TextColor);
+    requireTr.find(Parameter.Elements.TextColor).css('color',listRow[0].TextColor);
     requireTr.find(Parameter.Elements.BackColor).val(listRow[0].BackColor);
+    requireTr.find(Parameter.Elements.BackColor).css('background',listRow[0].BackColor);
     requireTr.find(Parameter.Elements.TextSize).val(listRow[0].TextSize);
     requireTr.find(Parameter.Elements.TextFont).val(listRow[0].TextFont);
 
@@ -364,14 +346,14 @@ jQuery.noConflict();
       var flg = false;
       for (var button of status.buttons) {
         var cloneTr = jQuery(Parameter.Html.TableBody + ' > tr').eq(0).clone(true);
-        cloneTr.find(Parameter.Elements.StatusTitle).text(status.name);
+        cloneTr.find(Parameter.Elements.TitleStatus).text(status.name);
         if (flg == false) {
           cloneTr.find('td').eq(0).prop('rowspan', status.buttons.length);
         } else {
           cloneTr.find('td').eq(0).hide();;
         }
 
-        cloneTr.find(Parameter.Elements.ButtonTitle).text(button.name);
+        cloneTr.find(Parameter.Elements.TitleButton).text(button.name);
 
         table.append(cloneTr);
         flg = true;
@@ -384,9 +366,10 @@ jQuery.noConflict();
           //console.log('find:%o', find);
 
           cloneTr.find(Parameter.Elements.EnabledCheck).eq(0).prop("checked", find.Checked);
-
           cloneTr.find(Parameter.Elements.TextColor).val(find.TextColor);
+          cloneTr.find(Parameter.Elements.TextColor).css('color', find.TextColor);
           cloneTr.find(Parameter.Elements.BackColor).val(find.BackColor);
+          cloneTr.find(Parameter.Elements.BackColor).css('background-color',find.BackColor);
           cloneTr.find(Parameter.Elements.TextSize).val(find.TextSize);
           cloneTr.find(Parameter.Elements.TextFont).val(find.TextFont);
         }
@@ -408,12 +391,12 @@ jQuery.noConflict();
     var listTr = jQuery(Parameter.Html.TableBody + ' > tr');
     var count = 0;
     for (var row of listTr) {
-      console.log("row:%o", row);
+      //console.log("row:%o", row);
 
-      var status = jQuery(row).find(Parameter.Elements.StatusTitle);
-      console.log("status:%o", status);
-      var button = jQuery(row).find(Parameter.Elements.ButtonTitle);
-      console.log("button:%o", button);
+      var status = jQuery(row).find(Parameter.Elements.TitleStatus);
+      //console.log("status:%o", status);
+      var button = jQuery(row).find(Parameter.Elements.TitleButton);
+      //console.log("button:%o", button);
 
       var checked =jQuery(row).find(Parameter.Elements.EnabledCheck);
       var textColor = jQuery(row).find(Parameter.Elements.TextColor);
@@ -429,7 +412,7 @@ jQuery.noConflict();
       });
       count++;
     }
-    console.log("listRow:%o", listRow);
+    //console.log("listRow:%o", listRow);
 
 
     config[ParameterCountRow] = '' + count;
@@ -473,7 +456,14 @@ jQuery.noConflict();
 
   // 言語設定
   settingLang();
-  await settingHtml();
+
+  // Change color
+  jQuery(Parameter.Elements.TextColor).change(ChangeTextColor);
+  jQuery(Parameter.Elements.TextColor).bind('paste',ChangeText);
+
+  // Change backgroundcolor
+  jQuery(Parameter.Elements.BackColor).change(ChangeBackColor);
+  jQuery(Parameter.Elements.BackColor).bind('paste',ChangeText);
 
   // 保存
   jQuery(Parameter.Html.Ok).click(() => { saveSetting();});
@@ -492,6 +482,8 @@ jQuery.noConflict();
       $colorPicker.colorPicker.toggle(false);
     }
   });
+
+  await settingHtml();
 
   /*
   スリープ関数

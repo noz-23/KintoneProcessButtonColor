@@ -26,7 +26,7 @@
  *
  * History
  *  2024/04/10 0.1.0 とりあえずバージョン
- *
+ *  2024/08/14 0.1.1 HTMLの表示関係の修正 
  */
 
 jQuery.noConflict();
@@ -100,7 +100,7 @@ jQuery.noConflict();
     for (var field of listFeild) {
       var element = getFieldElement(field, layout, listHtmlRow);
       console.log('element:%o', element);
-      if( element ==null){
+      if (element == null) {
         continue;
       }
 
@@ -109,8 +109,8 @@ jQuery.noConflict();
       element.style.fontSize = requireFeild.TextSize;
       element.style.textDecoration = requireFeild.TextFont;
 
-      var list =jQuery(element).find('div');
-      for(var e of list){
+      var list = jQuery(element).find('div');
+      for (var e of list) {
         e.style.color = requireFeild.TextColor;
         e.style.backgroundColor = requireFeild.BackColor;
         e.style.fontSize = requireFeild.TextSize;
@@ -200,7 +200,7 @@ jQuery.noConflict();
    引数　：nowStatus_:今のステータス
    戻り値：フィールド名リスト取得
   */
-   const getListRequireFeild = async (nowStatus_) => {
+  const getListRequireFeild = async (nowStatus_) => {
     const params = {
       app: kintone.app.getId()   // アプリ番号
     };
@@ -240,7 +240,7 @@ jQuery.noConflict();
    引数　：name_: フィールドコード, layout_:レイアウトデータ, htmlRows_ :htmlのROW(.row-gaia)リスト
    戻り値：htmlエレメント
   */
-   const getFieldElement = (name_, layout_, htmlRows_) => {
+  const getFieldElement = (name_, layout_, htmlRows_) => {
     var row = 0;
     var colunm = 0;
     var groupRow = 0;
@@ -250,33 +250,33 @@ jQuery.noConflict();
     var flgGroup = false;
     // レイアウトから行列の一取得
     for (; row < layout_.layout.length; row++) {
-      if(layout_.layout[row].type=='ROW'){
+      if (layout_.layout[row].type == 'ROW') {
         // フィールド
         for (; colunm < layout_.layout[row].fields.length; colunm++) {
           if (layout_.layout[row].fields[colunm].code == name_) {
             flgFind = true;
             break;
           }
-        }  
-      }else if( layout_.layout[row].type=='GROUP'){
+        }
+      } else if (layout_.layout[row].type == 'GROUP') {
         // グループ
-        var group =layout_.layout[row].layout;
-        console.log('group:%o ',group,);
+        var group = layout_.layout[row].layout;
+        console.log('group:%o ', group,);
 
         for (; groupRow < group.length; groupRow++) {
           for (; groupColunm < group[groupRow].fields.length; groupColunm++) {
             if (group[groupRow].fields[groupColunm].code == name_) {
               flgFind = true;
-              flgGroup =true;
+              flgGroup = true;
               console.log('groupRow[%o]/groupColunm[%o] ', groupRow, groupColunm);
               break;
             }
           }
-          groupColunm =0;
+          groupColunm = 0;
           if (flgFind == true) {
             break;
-          }    
-        }  
+          }
+        }
       }
       if (flgFind == true) {
         break;
@@ -286,18 +286,18 @@ jQuery.noConflict();
     console.log('row[%o]/column[%o] ', row, colunm);
     //console.log('htmlRows_[row][%o]', htmlRows_[row]);
 
-    if( flgFind == false){
+    if (flgFind == false) {
       // 見つからない場合
       return null;
-    }else if( flgGroup ==false){
+    } else if (flgGroup == false) {
       // 普通のフィールド
       return htmlRows_[row].children[colunm];
-    }else{
+    } else {
       // グループの中の場合
       console.log('htmlRows_:%o', htmlRows_[row]);
 
       var listTableRow = jQuery(htmlRows_[row]).find('.row-gaia');
-      console.log('listTableRow:%o',listTableRow );
+      console.log('listTableRow:%o', listTableRow);
       return listTableRow[groupRow].children[groupColunm];
     }
   };

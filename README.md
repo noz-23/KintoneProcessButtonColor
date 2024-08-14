@@ -55,6 +55,8 @@ tinyColorPicker and colors :https://github.com/PitPik/tinyColorPicker
 ## 6.バージョン履歴
 
  2024/04/10 0.1.0 とりあえずバージョン公開
+
+ 2024/08/14 0.1.1 HTMLの表示関係の修正 
  
 ## 7.連絡
 
